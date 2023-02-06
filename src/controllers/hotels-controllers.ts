@@ -11,37 +11,18 @@ export async function getHotels(req:AuthenticatedRequest, res:Response) {
     //console.log({userId})
 
     try{
+        const hotels = await Hotels();
         await enrollmentConfirmation(userId)
-    }catch(e){
-        res.status(404).send()
-    }
-
-    try{
         await ticketConfirmation(userId)
-    }catch(e){
-        res.status(404).send()
-    }
-
-    try{
-        const hotels = await Hotels();
-        if(hotels.length === 0) throw notFoundError
-        console.log(hotels)
-    }catch(e){
-        res.status(404).send()
-    }
-
-
-    try{
         await ticketStatusConfirmation(userId)
-    }catch(e){
-        res.status(402).send()
-    }
-    
-    try{
-        const hotels = await Hotels();
+
+        //if(hotels.length === 0) throw notFoundError
+        console.log(hotels)
         res.send(hotels)
     }catch(e){
-        res.status(404).send()
+        if(e.name ==="NotFoundError"){
+            return res.status(404).send()}
+        return res.status(402).send()
     }
 }
 
@@ -50,37 +31,18 @@ export async function getRooms(req:AuthenticatedRequest, res:Response){
     const hotelId = Number(req.params.hotelId);
 
     try{
-        await enrollmentConfirmation(userId)
-    }catch(e){
-        res.status(404).send()
-    }
-
-    try{
-        await ticketConfirmation(userId)
-    }catch(e){
-        res.status(404).send()
-    }
-
-
-    try{
         const RoomId = await Rooms(hotelId);
-        if (RoomId.Rooms.length === 0) throw notFoundError()
-        console.log(RoomId)
-    }catch(e){
-        res.status(404).send()
-    }
-
-
-    try{
+        await enrollmentConfirmation(userId)
+        await ticketConfirmation(userId)
         await ticketStatusConfirmation(userId)
-    }catch(e){
-        res.status(402).send()
-    }
-
-    try{
-        const RoomId = await Rooms(hotelId);  // Isso ta certo?
+        
+       // if (RoomId.Rooms.length === 0) throw notFoundError
+        console.log(RoomId)
         res.send(RoomId)
     }catch(e){
-        res.status(404).send()
+        if(e.name ==="NotFoundError"){
+            return res.status(404).send()}
+        return res.status(402).send()
+        
     }
 }

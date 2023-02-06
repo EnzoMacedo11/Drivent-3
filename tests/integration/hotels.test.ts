@@ -166,20 +166,22 @@ describe("GET /hotels/:id", () =>{
       //console.log(result)
   })
 
-  it("Should respond with status 404 if valid token without enrollment,ticket or hotel", async() =>{
+  it("Should respond with status 404 if valid token without enrollment,ticket or room", async() =>{
     const token = await generateValidToken()
+    const hotel = await createHotel()
 
-      const result =  await server.get("/hotels/1").set("Authorization",`Bearer ${token}`);
+      const result =  await server.get(`/hotels/${hotel.id}`).set("Authorization",`Bearer ${token}`);
        expect(result.status).toBe(404)
       //console.log(result)
   })
 
-  it("Should respond with status 404 if valid token,enrollment without ticket or hotel", async() =>{
+  it("Should respond with status 404 if valid token,enrollment without ticket or room", async() =>{
     const user = await createUser()
+    const hotel = await createHotel()
     await createEnrollmentWithAddress(user)
     const token = await generateValidToken(user)
 
-      const result =  await server.get("/hotels/1").set("Authorization",`Bearer ${token}`);
+      const result =  await server.get(`/hotels/${hotel.id}`).set("Authorization",`Bearer ${token}`);
        expect(result.status).toBe(404)
       //console.log(result)
   })
@@ -202,7 +204,7 @@ describe("GET /hotels/:id", () =>{
       
   })
   
-  it("Should respond with status 402 if valid token,enrollment, ticket and hotel/room but not paid, isremote and notIncludeHotel", async() =>{
+  it("Should respond with status 402 if valid token,enrollment, ticket and room but not paid, isremote and notIncludeHotel", async() =>{
     const user = await createUser()
     const hotel = await createHotel()
     const room = await createRoom(hotel.id)

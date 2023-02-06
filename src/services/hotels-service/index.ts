@@ -6,7 +6,7 @@ import { TicketStatus } from "@prisma/client";
 
 export async function Hotels(){
     const hotels = await findManyHotels();
-    if(!hotels) throw notFoundError()  
+    if(hotels.length === 0) throw notFoundError()  
     return hotels;
 }
 
@@ -32,6 +32,6 @@ export async function ticketStatusConfirmation(userId:number){
 
 export async function Rooms(hotelId:number){
     const Rooms = await findHotelRooms(hotelId);
-    if(!Rooms) throw notFoundError()
+    if(Rooms.Rooms.length === 0) throw notFoundError()
     return Rooms;
 }
